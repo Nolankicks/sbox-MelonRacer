@@ -10,10 +10,22 @@ public sealed class MelonController : Component
 	void CamRot()
 	{
 		var e = EyeAngles;
-		e += Input.AnalogLook * 0.1f;
+		e += Input.AnalogLook * Preferences.Sensitivity;
 		e.pitch = e.pitch.Clamp(-89, 89);
 		e.roll = 0;
 		EyeAngles = e;
+	}
+	public float MovementSpeed()
+	{
+		if (Input.Down("run"))
+		{
+			return 1000;
+		}
+		else
+		{
+			return 700;
+		}
+
 	}
 	void Move()
 	{
@@ -30,7 +42,7 @@ public sealed class MelonController : Component
 			WishVelocity = new Angles(0, EyeAngles.yaw, 0).ToRotation() * WishVelocity;
 			WishVelocity.WithZ(0);
 			WishVelocity.ClampLength(1);
-			WishVelocity *= 500;
+			WishVelocity *= MovementSpeed();
 			if (!cc.IsOnGround)
 			{
 				WishVelocity.ClampLength(50);
@@ -62,14 +74,14 @@ public sealed class MelonController : Component
 	public void CamMovement()
 	{
 		Camera = Scene.GetAllComponents<CameraComponent>().Where( x => x.IsMainCamera).FirstOrDefault();
-		var tr = Scene.Trace.Ray(body.Transform.Position, body.Transform.Position - (EyeAngles.Forward * 500)).WithoutTags("player").Run();
+		var tr = Scene.Trace.Ray(body.Transform.Position, body.Transform.Position - (EyeAngles.Forward * 600)).WithoutTags("player").Run();
 		if (tr.Hit)
 		{
-			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2;
+			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2 + Vector3.Up * 50;
 		}
 		else
 		{
-			Camera.Transform.Position = body.Transform.Position - (EyeAngles.Forward * 500);
+			Camera.Transform.Position = body.Transform.Position - (EyeAngles.Forward * 600) + Vector3.Up * 50;
 		}
 	}
 	protected override void OnUpdate()
