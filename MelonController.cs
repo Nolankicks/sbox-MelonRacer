@@ -7,6 +7,7 @@ public sealed class MelonController : Component
 	public CameraComponent Camera;
 	[Property] public GameObject body { get; set; }
 	[Sync] public Angles EyeAngles { get; set; }
+	public TimeSince lastJump = 0.3f;
 	void CamRot()
 	{
 		var e = EyeAngles;
@@ -19,24 +20,34 @@ public sealed class MelonController : Component
 	{
 		if (Input.Down("run"))
 		{
-			return 1000;
+			return 900;
 		}
 		else
 		{
-			return 700;
+			return 500;
 		}
 
+	}
+
+	public float Friction()
+	{
+		if (Controller.IsOnGround)
+		{
+			return 6f;
+		}
+		else
+		{
+			return 0.2f;
+		}
 	}
 	void Move()
 	{
 		var cc = Controller;
 		var cam = Scene.Camera;
-		Vector3 halfGrav = Scene.PhysicsWorld.Gravity * 0.5f;
+		Vector3 halfGrav = Scene.PhysicsWorld.Gravity * 0.5f * Time.Delta;
 		WishVelocity = Input.AnalogMove;
-		if (Input.Pressed("jump") && cc.IsOnGround)
-		{
-			cc.Punch(Vector3.Up * 320.0f);
-		}
+		
+
 		if (!WishVelocity.IsNearlyZero())
 		{
 			WishVelocity = new Angles(0, EyeAngles.yaw, 0).ToRotation() * WishVelocity;
@@ -48,16 +59,17 @@ public sealed class MelonController : Component
 				WishVelocity.ClampLength(50);
 			}
 		}
-		cc.ApplyFriction(6f);
+		cc.ApplyFriction(Friction());
 
 		if (cc.IsOnGround)
 		{
 			cc.Accelerate(WishVelocity);
-			cc.Velocity = Controller.Velocity.WithZ(0);
+			cc.Velocity = cc.Velocity.WithZ(0);
 		}
 		else
 		{
 			cc.Velocity += halfGrav;
+			lastJump = 0;
 			cc.Accelerate(WishVelocity);
 		}
 		cc.Move();
@@ -89,7 +101,12 @@ public sealed class MelonController : Component
 		CamRot();
 		CamMovement();
 		Move();
-		GameObject.Transform.Rotation = EyeAngles.ToRotation();
+		body.Transform.Rotation = new Angles(0, EyeAngles.yaw, 90).ToRotation();
 		Camera.Transform.Rotation = EyeAngles.ToRotation();
+		if (lastJump > 0.01f && Input.Pressed( "Jump" ) )
+		{
+			Log.Info("jump");
+			Controller.Punch( Vector3.Up * 300 );
+		}
 	}
 }
