@@ -7,6 +7,7 @@ public sealed class MelonController : Component
 	[Property] public CharacterController Controller { get; set; }
 	public CameraComponent Camera;
 	[Property] public GameObject body { get; set; }
+	public int Laps = 0;
 	[Sync] public Angles EyeAngles { get; set; }
 	public TimeSince lastJump = 0.3f;
 	void CamRot()
