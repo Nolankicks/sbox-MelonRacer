@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Sandbox;
 
@@ -9,7 +10,9 @@ public sealed class MelonController : Component
 	[Property] public GameObject body { get; set; }
 	public int Laps = 0;
 	[Sync] public Angles EyeAngles { get; set; }
+	public Angles RollAngles { get; set; }
 	public TimeSince lastJump = 0.3f;
+	float RotSpeed = 0;
 	void CamRot()
 	{
 		var e = EyeAngles;
@@ -22,7 +25,7 @@ public sealed class MelonController : Component
 	{
 		if (Input.Down("run"))
 		{
-			return 900;
+			return 1500;
 		}
 		else
 		{
@@ -88,7 +91,7 @@ public sealed class MelonController : Component
 	public void CamMovement()
 	{
 		Camera = Scene.GetAllComponents<CameraComponent>().Where( x => x.IsMainCamera).FirstOrDefault();
-		var tr = Scene.Trace.Ray(body.Transform.Position, body.Transform.Position - (EyeAngles.Forward * 600)).WithoutTags("player").Run();
+		var tr = Scene.Trace.Ray(body.Transform.Position, body.Transform.Position - (EyeAngles.Forward * 300)).WithoutTags("player").Run();
 		if (tr.Hit)
 		{
 			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2 + Vector3.Up * 50;
@@ -103,8 +106,8 @@ public sealed class MelonController : Component
 		CamRot();
 		CamMovement();
 		Move();
-		int RotationSpeed = 5;
-		body.Transform.Rotation = new Angles(RotationSpeed++, EyeAngles.yaw, 90).ToRotation();
+		RollAngles += new Angles(Input.AnalogMove);
+		body.Transform.Rotation = RollAngles.ToRotation();
 		Camera.Transform.Rotation = EyeAngles.ToRotation();
 		if (lastJump > 0.01f && Input.Pressed( "Jump" ) )
 		{
