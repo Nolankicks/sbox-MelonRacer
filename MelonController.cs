@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Sandbox;
 
 public sealed class MelonController : Component
@@ -101,7 +102,8 @@ public sealed class MelonController : Component
 		CamRot();
 		CamMovement();
 		Move();
-		body.Transform.Rotation = new Angles(0, EyeAngles.yaw, 90).ToRotation();
+		int RotationSpeed = 5;
+		body.Transform.Rotation = new Angles(RotationSpeed++, EyeAngles.yaw, 90).ToRotation();
 		Camera.Transform.Rotation = EyeAngles.ToRotation();
 		if (lastJump > 0.01f && Input.Pressed( "Jump" ) )
 		{
@@ -110,3 +112,4 @@ public sealed class MelonController : Component
 		}
 	}
 }
+
