@@ -1,8 +1,10 @@
+using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.VisualBasic;
 using Sandbox;
 
-public sealed class MelonController : Component
+public sealed class MelonController : Component, Component.ICollisionListener
 {
 	public Vector3 WishVelocity;
 	[Property] public CharacterController Controller { get; set; }
@@ -12,7 +14,12 @@ public sealed class MelonController : Component
 	[Sync] public Angles EyeAngles { get; set; }
 	public Angles RollAngles { get; set; }
 	public TimeSince lastJump = 0.3f;
-	float RotSpeed = 0;
+	public TimeSince lastAir = 0;
+
+	protected override void OnEnabled()
+	{
+		_ = Bounce();
+	}
 	void CamRot()
 	{
 		var e = EyeAngles;
@@ -25,7 +32,7 @@ public sealed class MelonController : Component
 	{
 		if (Input.Down("run"))
 		{
-			return 1500;
+			return 1000;
 		}
 		else
 		{
@@ -70,12 +77,14 @@ public sealed class MelonController : Component
 		{
 			cc.Accelerate(WishVelocity);
 			cc.Velocity = cc.Velocity.WithZ(0);
+			lastAir = 0;
 		}
 		else
 		{
 			cc.Velocity += halfGrav;
 			lastJump = 0;
 			cc.Accelerate(WishVelocity);
+
 		}
 		cc.Move();
 
@@ -98,7 +107,7 @@ public sealed class MelonController : Component
 		}
 		else
 		{
-			Camera.Transform.Position = body.Transform.Position - (EyeAngles.Forward * 600) + Vector3.Up * 50;
+			Camera.Transform.Position = body.Transform.Position - (EyeAngles.Forward * 200) + Vector3.Up * 25;
 		}
 	}
 	protected override void OnUpdate()
@@ -106,13 +115,34 @@ public sealed class MelonController : Component
 		CamRot();
 		CamMovement();
 		Move();
-		RollAngles += new Angles(Input.AnalogMove);
-		body.Transform.Rotation = RollAngles.ToRotation();
+		RollAngles += new Angles(Input.AnalogMove.x, 0, 0);
+		var TargetAngles = new Angles(RollAngles.pitch, EyeAngles.yaw, RollAngles.roll).ToRotation();
+		body.Transform.Rotation = Rotation.Slerp(body.Transform.Rotation, TargetAngles, Time.Delta * 5);
 		Camera.Transform.Rotation = EyeAngles.ToRotation();
+		body.Components.TryGet<Rigidbody>(out var rb);
 		if (lastJump > 0.01f && Input.Pressed( "Jump" ) )
 		{
 			Log.Info("jump");
 			Controller.Punch( Vector3.Up * 300 );
+		}
+	}
+	public async Task Bounce()
+	{
+		while (true)
+		{
+			if (Controller.Velocity.Length > 200 && Controller.IsOnGround)
+			{
+				GameObject.Components.TryGet<Rigidbody>(out var rb);
+				var tr = Controller.TraceDirection(Vector3.Down * 50);
+				if (tr.Hit)
+				{
+					Controller.Punch(Vector3.Up * 50);
+					Controller.Velocity += 300f;
+				}
+			}
+			var randomTime = Random.Shared.Float(0f, 5f);
+			Log.Info("bounce");
+			await Task.DelayRealtimeSeconds(randomTime);
 		}
 	}
 }
