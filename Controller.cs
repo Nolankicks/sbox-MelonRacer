@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.CompilerServices;
 using Sandbox;
 using Sandbox.ModelEditor.Nodes;
@@ -9,7 +10,7 @@ public sealed class Controller : Component
 	[Property] public GameObject Body { get; set; }
 	public CameraComponent Camera;
 	public Angles EyeAngles { get; set; }
-	[Property] public int Laps { get; set;} = 0;
+	public TimeSince LapTime;
 	protected override void OnFixedUpdate()
 	{
 		BuildMoveAngles();
@@ -21,9 +22,13 @@ public sealed class Controller : Component
 
 		//Camera.Transform.Rotation = EyeAngles.ToRotation();
 	}
+	protected override void OnStart()
+	{
+		LapTime = 0;
+	}
 	protected override void OnUpdate()
 	{
-		
+
 	}
 	void BuildMoveAngles()
 	{
@@ -39,7 +44,7 @@ public sealed class Controller : Component
 	void CamRot()
 	{
 		var e = EyeAngles;
-		e += Input.AnalogLook * 5;
+		e += Input.AnalogLook * Preferences.Sensitivity;
 		e.pitch = e.pitch.Clamp(-89, 89);
 		EyeAngles = e;
 	}
