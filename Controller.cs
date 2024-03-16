@@ -13,15 +13,21 @@ public sealed class Controller : Component
 	public Angles EyeAngles { get; set; }
 	public TimeSince LapTime;
 	public int LapCount { get; set; }
+	public bool AbleToMove { get; set; } = true;
 	protected override void OnFixedUpdate()
 	{
+		if (AbleToMove)
+		{
 		BuildMoveAngles();
 		CamRot();
 		UpdateCamPos();
+		}
 		Log.Info(WishVelocity);
 		Rigidbody.PhysicsBody.LinearDrag = 0.5f;
+		if (AbleToMove)
+		{
 		Rigidbody.ApplyForce(WishVelocity * 500);
-
+		}
 		//Camera.Transform.Rotation = EyeAngles.ToRotation();
 	}
 	protected override void OnStart()
@@ -56,7 +62,7 @@ void UpdateCamPos()
 		Camera = Scene.GetAllComponents<CameraComponent>().Where(x => x.IsMainCamera).FirstOrDefault();
 		var center = Rigidbody.PhysicsBody.GetBounds().Center;
         var lookDir = EyeAngles.ToRotation();
-        var targetpos = Transform.Position.LerpTo(center + lookDir.Backward * 300 + Vector3.Up * 75.0f, 1f);
+        var targetpos = Transform.Position.LerpTo(center + lookDir.Backward * 300 + Vector3.Up * 50.0f, 1f);
         Camera.Transform.Position = targetpos;
         Camera.Transform.Rotation = lookDir;
     }
