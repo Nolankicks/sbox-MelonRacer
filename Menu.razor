@@ -1,0 +1,40 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root>
+	<img class="background" src="assets\1444966765_preview_Melon_Racer_artwork.png">
+	<div class="leaderboard">
+	@foreach (var entry in Manager.Leaderboard.Entries)
+	{
+		<div class="entry">
+		
+		<div class="name">@entry.DisplayName
+		<image texture=@AvatarTexture(entry)/></div>
+		<div class="score">@entry.FormattedValue</div>
+		</div>
+		
+	}
+	</div>
+</root>
+
+@code
+{
+	[Property] public Manager Manager { get; set; }
+	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
+
+	 string IsMe(Sandbox.Services.Leaderboards.Entry entry)
+    {
+        return entry.Me ? "me" : "";
+    }
+
+
+	string AvatarTexture(Sandbox.Services.Leaderboards.Entry entry)
+    {
+        return $"avatar:{entry.SteamId}";
+    }
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( Time.Now );
+}
