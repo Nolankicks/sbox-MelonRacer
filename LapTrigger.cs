@@ -13,9 +13,10 @@ public sealed class LapTrigger : Component, Component.ITriggerListener
 		if (other.GameObject.Tags.Has("player") && controller != null)
 		{
 			Log.Info("Lap Triggered");
-			controller.LapTime = 0;
 			controller.LapCount++;
 			manager.Lap(controller);
+			Sandbox.Services.Stats.SetValue("laps", controller.LapCount);
+			Sandbox.Services.Stats.SetValue("laptime", controller.LapTime);
 		}
 	}
 	void ITriggerListener.OnTriggerExit(Sandbox.Collider other)
