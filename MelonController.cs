@@ -4,35 +4,35 @@ using System.Threading.Tasks;
 using Microsoft.VisualBasic;
 using Sandbox;
 
-public sealed class MelonController : Component, Component.ICollisionListener
+public sealed class MelonController : Component
 {
 	public Vector3 WishVelocity;
 	[Property] public CharacterController Controller { get; set; }
 	public CameraComponent Camera;
 	[Property] public GameObject body { get; set; }
+	[Property] public Rigidbody rigidbody { get; set; }
 	public int Laps = 0;
 	[Sync] public Angles EyeAngles { get; set; }
 	public Angles RollAngles { get; set; }
 	public TimeSince lastJump = 0.3f;
 	public TimeSince lastAir = 0;
-
+	[Property] public bool ApplyInpulse { get; set; }
 	protected override void OnEnabled()
 	{
-		_ = Bounce();
+	 
 	}
 	void CamRot()
 	{
 		var e = EyeAngles;
 		e += Input.AnalogLook * Preferences.Sensitivity;
 		e.pitch = e.pitch.Clamp(-89, 89);
-		e.roll = 0;
 		EyeAngles = e;
 	}
 	public float MovementSpeed()
 	{
 		if (Input.Down("run"))
 		{
-			return 1000;
+			return 800;
 		}
 		else
 		{
@@ -45,7 +45,7 @@ public sealed class MelonController : Component, Component.ICollisionListener
 	{
 		if (Controller.IsOnGround)
 		{
-			return 6f;
+			return 2.5f;
 		}
 		else
 		{
@@ -101,7 +101,7 @@ public sealed class MelonController : Component, Component.ICollisionListener
 	{
 		Camera = Scene.GetAllComponents<CameraComponent>().Where( x => x.IsMainCamera).FirstOrDefault();
 		var tr = Scene.Trace.Ray(body.Transform.Position, body.Transform.Position - (EyeAngles.Forward * 300)).WithoutTags("player").Run();
-		if (tr.Hit)
+		if (!tr.Hit)
 		{
 			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2 + Vector3.Up * 50;
 		}
@@ -115,35 +115,34 @@ public sealed class MelonController : Component, Component.ICollisionListener
 		CamRot();
 		CamMovement();
 		Move();
-		RollAngles += new Angles(Input.AnalogMove.x, 0, 0);
-		var TargetAngles = new Angles(RollAngles.pitch, EyeAngles.yaw, RollAngles.roll).ToRotation();
-		body.Transform.Rotation = Rotation.Slerp(body.Transform.Rotation, TargetAngles, Time.Delta * 5);
+		//var TargetAngles = new Angles(RollAngles.pitch, 0, 90).ToRotation();
+		//body.Transform.Rotation = Rotation.Slerp(body.Transform.Rotation, TargetAngles, Time.Delta * 5);
+
 		Camera.Transform.Rotation = EyeAngles.ToRotation();
-		body.Components.TryGet<Rigidbody>(out var rb);
+		//rigidbody.PhysicsBody.AngularVelocity = new Vector3(100);
+		
+		
+		
 		if (lastJump > 0.01f && Input.Pressed( "Jump" ) )
 		{
 			Log.Info("jump");
 			Controller.Punch( Vector3.Up * 300 );
 		}
+	
 	}
-	public async Task Bounce()
+	
+	protected override void OnFixedUpdate()
 	{
-		while (true)
+		RollAngles = new Angles(WishVelocity.x, EyeAngles.yaw, WishVelocity.z);
+		if (ApplyInpulse)
 		{
-			if (Controller.Velocity.Length > 200 && Controller.IsOnGround)
-			{
-				GameObject.Components.TryGet<Rigidbody>(out var rb);
-				var tr = Controller.TraceDirection(Vector3.Down * 50);
-				if (tr.Hit)
-				{
-					Controller.Punch(Vector3.Up * 50);
-					Controller.Velocity += 300f;
-				}
-			}
-			var randomTime = Random.Shared.Float(0f, 5f);
-			Log.Info("bounce");
-			await Task.DelayRealtimeSeconds(randomTime);
+			Controller.Velocity += 300 * Time.Delta;
+			Log.Info(Controller.Velocity);
+			Controller.Punch( Vector3.Up * 300 + Vector3.Forward * 300 );
+			ApplyInpulse = false;
 		}
 	}
+
+
 }
 
