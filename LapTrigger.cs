@@ -15,7 +15,7 @@ public sealed class LapTrigger : Component, Component.ITriggerListener
 			Log.Info("Lap Triggered");
 			controller.LapTime = 0;
 			controller.LapCount++;
-			manager.Respawn(controller);
+			manager.Lap(controller);
 		}
 	}
 	void ITriggerListener.OnTriggerExit(Sandbox.Collider other)

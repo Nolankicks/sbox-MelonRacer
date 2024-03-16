@@ -41,7 +41,7 @@ public sealed class Controller : Component
 			WishVelocity = new Angles(0, EyeAngles.yaw, 0).ToRotation() * WishVelocity;
 			WishVelocity.WithZ(0);
 			WishVelocity.ClampLength(1);
-			WishVelocity *= 150;
+			WishVelocity *= 200;
 		}
 	}
 	void CamRot()
