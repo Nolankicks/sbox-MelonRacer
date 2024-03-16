@@ -32,7 +32,7 @@ Menu
 		width: 600px;
 		height: 95%;
 		background-color: rgb(70, 191, 240);
-		border-radius: 16px;
+		border-radius: 32px;
 		flex-direction: column;
 		align-self: center;
 		padding: 16px;
@@ -129,6 +129,26 @@ Menu
 				position: absolute;
 				left: 32px;
 			}
+		}
+	}
+
+	.playbutton
+	{
+	
+		position: absolute;
+		width: 300px;
+		height: 100px;
+		align-items: center;
+		justify-content: center;
+		background-color: #fff;
+		border-radius: 16px;
+		font-size: 32px;
+		font-weight: bold;
+		color: #000;
+		transition: all 0.1s ease;
+		&:hover
+		{
+			transform: scale(1.1);
 		}
 	}
 }

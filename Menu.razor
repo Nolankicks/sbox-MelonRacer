@@ -8,13 +8,11 @@
 	<div class="title">Leaderboard</div>
 	<div class="changeleaderboard">
 	<div class="add" onclick=@AddToLeaderboard>navigate_next</div>
-	<div class="text">@Leaderboards[CurrentLeaderboardIndex].Title</div>
+	<div class="text">@Leaderboards[CurrentLeaderboardIndex].DisplayName</div>
 	<div class="subtract" onclick=@SubtractFromLeaderboard>chevron_left</div>
 	</div>
 	@foreach (var entry in Leaderboards[CurrentLeaderboardIndex].Entries)
 	{
-		
-	
 		<div class="entry">
 		<div class="name">@entry.Rank: @entry.DisplayName
 		<image texture=@AvatarTexture(entry)/></div>
@@ -23,6 +21,8 @@
 		
 	}
 	</div>
+
+	<div class="playbutton">Start</div>
 </root>
 
 @code
@@ -59,12 +59,20 @@
 		{
 		CurrentLeaderboardIndex++;
 		}
+		else
+		{
+			CurrentLeaderboardIndex = 0;
+		}
 	}
 	void SubtractFromLeaderboard()
 	{
 		if (CurrentLeaderboardIndex != 0)
 		{
 		CurrentLeaderboardIndex--;
+		}
+		else
+		{
+			CurrentLeaderboardIndex = Leaderboards.Length - 1;
 		}
 	}
 	
