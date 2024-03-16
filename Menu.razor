@@ -5,10 +5,17 @@
 <root>
 	<img class="background" src="assets\1444966765_preview_Melon_Racer_artwork.png">
 	<div class="leaderboard">
-	@foreach (var entry in Manager.Leaderboard.Entries)
+	<div class="title">Leaderboard</div>
+	<div class="changeleaderboard">
+	<div class="add" onclick=@AddToLeaderboard>navigate_next</div>
+	<div class="text">@Leaderboards[CurrentLeaderboardIndex].Title</div>
+	<div class="subtract" onclick=@SubtractFromLeaderboard>chevron_left</div>
+	</div>
+	@foreach (var entry in Leaderboards[CurrentLeaderboardIndex].Entries)
 	{
-		<div class="entry">
 		
+	
+		<div class="entry">
 		<div class="name">@entry.Rank: @entry.DisplayName
 		<image texture=@AvatarTexture(entry)/></div>
 		<div class="score">@entry.FormattedValue</div>
@@ -22,7 +29,19 @@
 {
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
+	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[2];
+	public int CurrentLeaderboardIndex = 0;
+	protected override void OnUpdate()
+	{
+		CurrentLeaderboardIndex.Clamp(0, Leaderboards.Length - 1);
+		Leaderboards[0] = Manager.FastestLap;
+		Leaderboards[1] = Manager.MostLaps;
+		Log.Info(CurrentLeaderboardIndex);
+	}
+	protected override void OnStart()
+	{
 
+	}
 	 string IsMe(Sandbox.Services.Leaderboards.Entry entry)
     {
         return entry.Me ? "me" : "";
@@ -33,6 +52,22 @@
     {
         return $"avatar:{entry.SteamId}";
     }
+
+	void AddToLeaderboard()
+	{
+		if (CurrentLeaderboardIndex != Leaderboards.Length - 1)
+		{
+		CurrentLeaderboardIndex++;
+		}
+	}
+	void SubtractFromLeaderboard()
+	{
+		if (CurrentLeaderboardIndex != 0)
+		{
+		CurrentLeaderboardIndex--;
+		}
+	}
+	
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>

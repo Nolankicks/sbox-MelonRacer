@@ -6,10 +6,12 @@ public sealed class Manager : Component
 {
 	[Property] public GameObject PlayerPrefab { get; set; }
 	[Property] public List<SpawnPoint> spawnPoints { get; set;} = new List<SpawnPoint>();
-	public Sandbox.Services.Leaderboards.Board Leaderboard { get; set; }
+	public Sandbox.Services.Leaderboards.Board FastestLap { get; set; }
+	public Sandbox.Services.Leaderboards.Board MostLaps { get; set; }
 	protected override void OnStart()
 	{
-		_ = FetchLeaderBoard();
+		_ = FetchFastestLap();
+		_ = RefreshMostLaps();
 	}
 	protected override void OnUpdate()
 	{
@@ -33,11 +35,17 @@ public sealed class Manager : Component
 		controller.WishVelocity = Vector3.Zero;
 	}
 
-	public async Task FetchLeaderBoard()
+	public async Task FetchFastestLap()
 	{
-		Leaderboard = Sandbox.Services.Leaderboards.Get("fastestlap");
-		Leaderboard.MaxEntries = 10;
-		await Leaderboard.Refresh();
+		FastestLap = Sandbox.Services.Leaderboards.Get("fastestlap");
+		FastestLap.MaxEntries = 5;
+		await FastestLap.Refresh();
+	}
+	public async Task RefreshMostLaps()
+	{
+		MostLaps = Sandbox.Services.Leaderboards.Get("mostlaps");
+		MostLaps.MaxEntries = 5;
+		await MostLaps.Refresh();
 	}
 
 
