@@ -4,7 +4,8 @@
 @using System;
 <root>
 	<div class="stats">
-		@Math.Round(Controller.LapTime, 2)
+	<div class="entry">Laps: @Controller.LapCount</div>
+	<div class="entry">Time: @Math.Round(Controller.LapTime, 2)</div>
 	</div>
 </root>
 
@@ -12,11 +13,7 @@
 {
 
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
-	public Controller Controller { get; set; }
-	protected override void OnUpdate()
-	{
-		Controller = Scene.GetAllComponents<Controller>().FirstOrDefault();
-	}
+	[Property] public Controller Controller { get; set; }
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
