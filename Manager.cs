@@ -16,6 +16,7 @@ public sealed class Manager : Component
 	public void Respawn( Controller controller )
 	{
 		var spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToArray();
+		controller.EyeAngles = new Angles(0, 180, 0);
 		controller.Transform.Position = Game.Random.FromArray(spawnPoints).GameObject.Transform.Position;
 	}
 }

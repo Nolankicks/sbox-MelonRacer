@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using Sandbox;
 using Sandbox.ModelEditor.Nodes;
@@ -11,6 +12,7 @@ public sealed class Controller : Component
 	public CameraComponent Camera;
 	public Angles EyeAngles { get; set; }
 	public TimeSince LapTime;
+	public int LapCount { get; set; }
 	protected override void OnFixedUpdate()
 	{
 		BuildMoveAngles();
@@ -18,13 +20,14 @@ public sealed class Controller : Component
 		UpdateCamPos();
 		Log.Info(WishVelocity);
 		Rigidbody.PhysicsBody.LinearDrag = 0.5f;
-		Rigidbody.ApplyForce(WishVelocity * 500);
+		Rigidbody.ApplyForce(WishVelocity * 400);
 
 		//Camera.Transform.Rotation = EyeAngles.ToRotation();
 	}
 	protected override void OnStart()
 	{
 		LapTime = 0;
+		EyeAngles = new Angles(0, 180, 0);
 	}
 	protected override void OnUpdate()
 	{
