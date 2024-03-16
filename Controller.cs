@@ -7,14 +7,16 @@ public sealed class Controller : Component
 	[Property] public Rigidbody Rigidbody { get; set; }
 	[Property] public Vector3 WishVelocity { get; set; }
 	[Property] public GameObject Body { get; set; }
-	[Property] public CameraComponent Camera;
+	public CameraComponent Camera;
 	public Angles EyeAngles { get; set; }
+	[Property] public int Laps { get; set;} = 0;
 	protected override void OnFixedUpdate()
 	{
 		BuildMoveAngles();
 		CamRot();
 		UpdateCamPos();
 		Log.Info(WishVelocity);
+		Rigidbody.PhysicsBody.LinearDrag = 0.5f;
 		Rigidbody.ApplyForce(WishVelocity * 500);
 
 		//Camera.Transform.Rotation = EyeAngles.ToRotation();
@@ -31,7 +33,7 @@ public sealed class Controller : Component
 			WishVelocity = new Angles(0, EyeAngles.yaw, 0).ToRotation() * WishVelocity;
 			WishVelocity.WithZ(0);
 			WishVelocity.ClampLength(1);
-			WishVelocity *= 700;
+			WishVelocity *= 150;
 		}
 	}
 	void CamRot()
@@ -43,7 +45,9 @@ public sealed class Controller : Component
 	}
 
 void UpdateCamPos()
-    {	var center = Rigidbody.PhysicsBody.GetBounds().Center;
+    {	
+		Camera = Scene.GetAllComponents<CameraComponent>().Where(x => x.IsMainCamera).FirstOrDefault();
+		var center = Rigidbody.PhysicsBody.GetBounds().Center;
         var lookDir = EyeAngles.ToRotation();
         var targetpos = Transform.Position.LerpTo(center + lookDir.Backward * 300 + Vector3.Up * 75.0f, 1f);
         Camera.Transform.Position = targetpos;

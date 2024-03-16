@@ -5,16 +5,32 @@ Hud
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #444;
 	justify-content: center;
 	align-items: center;
 	font-weight: bold;
 	border-radius: 20px;
+	font-family: poppins;
 
-	.title
+	.stats
 	{
-		font-size: 25px;
-		font-family: Poppins;
-		color: #fff;
+		position: absolute;
+		top: 32px;
+		left: 32px;
+		background-color: pink;
+		padding: 16px;
+		width: 500px;
+		height: 500px;
+		border-radius: 20px;
+		align-items: center;
+		justify-content: center;
+		>.laps
+		{
+			
+			font-size: 64px;
+			position: absolute;
+			top: 0;
+			right: 0;
+			color: #fff;
+		}
 	}
 }

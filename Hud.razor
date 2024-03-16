@@ -3,16 +3,24 @@
 @inherits PanelComponent
 
 <root>
-	<div class="title">@MyStringValue</div>
+	<div class="stats">
+	
+	</div>
 </root>
 
 @code
 {
 
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
+	public Controller Controller { get; set; }
+
+	protected override void OnUpdate()
+	{
+		Controller = Scene.GetAllComponents<Controller>().FirstOrDefault();
+	}
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine( MyStringValue );
+	protected override int BuildHash() => System.HashCode.Combine( Controller.Laps );
 }

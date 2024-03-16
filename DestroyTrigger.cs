@@ -14,10 +14,11 @@ public sealed class DestroyTrigger : Component, Component.ITriggerListener
 			Log.Info("Triggered");
 			if (other.GameObject.Tags.Has("player"))
 			{
+				var triggerController = other.Components?.Get<Controller>();
 				var gibs = melonGibs.Clone(other.GameObject.Transform.Position);
 				gibs.Components.TryGet<Prop>(out var prop);
 				prop.CreateGibs();
-				manager.Respawn();
+				manager.Respawn(triggerController);
 			}
 	}
 }
