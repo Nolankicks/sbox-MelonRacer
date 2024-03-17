@@ -25,7 +25,6 @@ public sealed class Controller : Component
 		CamRot();
 		UpdateCamPos();
 		}
-		Log.Info(WishVelocity);
 		Rigidbody.PhysicsBody.LinearDrag = 0.5f;
 		if (AbleToMove)
 		{

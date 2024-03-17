@@ -15,13 +15,8 @@ public sealed class DestroyTrigger : Component, Component.ITriggerListener
 			Log.Info("Triggered");
 			if (other.GameObject.Tags.Has("player"))
 			{
-				_ = Respawn(other);
+				var triggerController = other.Components?.Get<Controller>();
+				_ = triggerController.Respawn(other.GameObject);
 			}
-	}
-
-	public async Task Respawn(Collider other)
-	{
-			var triggerController = other.Components?.Get<Controller>();
-			_ = triggerController.Respawn(other.GameObject);
 	}
 }
