@@ -64,9 +64,18 @@ void UpdateCamPos()
 		Camera = Scene.GetAllComponents<CameraComponent>().Where(x => x.IsMainCamera).FirstOrDefault();
 		var center = Rigidbody.PhysicsBody.GetBounds().Center;
         var lookDir = EyeAngles.ToRotation();
-        var targetpos = Transform.Position.LerpTo(center + lookDir.Backward * 300 + Vector3.Up * 50.0f, 1f);
-        Camera.Transform.Position = targetpos;
+        //var targetpos = Transform.Position.LerpTo(center + lookDir.Backward * 300 + Vector3.Up * 50.0f, 1f);
+        //Camera.Transform.Position = targetpos;
         Camera.Transform.Rotation = lookDir;
+		var tr = Scene.Trace.Ray(center, center - (EyeAngles.Forward * 300)).WithoutTags("player").Run();
+		if (tr.Hit)
+		{
+			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2 + Vector3.Up * 50;
+		}
+		else
+		{
+			Camera.Transform.Position = center - (EyeAngles.Forward * 300) + Vector3.Up * 50;
+		}
     }
 	public void ExplosiveKill()
 	{
