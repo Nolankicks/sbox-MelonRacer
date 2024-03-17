@@ -13,9 +13,10 @@ public sealed class DestroyTrigger : Component, Component.ITriggerListener
 	public void OnTriggerEnter(Collider other)
 	{
 			Log.Info("Triggered");
-			if (other.GameObject.Tags.Has("player"))
+			var triggerController = other.Components.Get<Controller>();
+			if (other.GameObject.Tags.Has("player") && triggerController is not null && triggerController.AbleToMove)
 			{
-				var triggerController = other.Components?.Get<Controller>();
+				
 				_ = triggerController.Respawn(other.GameObject);
 			}
 	}
