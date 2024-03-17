@@ -38,7 +38,7 @@ public sealed class Controller : Component
 	}
 	protected override void OnUpdate()
 	{
-
+		
 	}
 	void BuildMoveAngles()
 	{
@@ -48,13 +48,13 @@ public sealed class Controller : Component
 			WishVelocity = new Angles(0, EyeAngles.yaw, 0).ToRotation() * WishVelocity;
 			WishVelocity.WithZ(0);
 			WishVelocity.ClampLength(1);
-			WishVelocity *= 150;
+			WishVelocity *= 175;
 		}
 	}
 	void CamRot()
 	{
 		var e = EyeAngles;
-		e += Input.AnalogLook * Preferences.Sensitivity;
+		e += Input.AnalogLook;
 		e.pitch = e.pitch.Clamp(-89, 89);
 		EyeAngles = e;
 	}
@@ -89,16 +89,22 @@ void UpdateCamPos()
 				gibsref.Components.TryGet<Prop>(out var prop);
 				prop.Enabled = false;
 				prop.Transform.Position = other.Transform.Position;
+				other.Components.TryGet<SkinnedModelRenderer>(out var model);
+				if (model is not null)
+				{
+					model.Enabled = false;
+				}
 				if (prop is not null)
 				{
 					prop.CreateGibs();
 				}
 				triggerController.AbleToMove = false;
-				triggerController.Components.TryGet<SkinnedModelRenderer>(out var model);
-				model.Enabled = false;
 				await Task.DelayRealtimeSeconds(2);
+				if (model is not null)
+				{
+					model.Enabled = true;
+				}
 				Manager.Respawn(triggerController);
 				triggerController.AbleToMove = true;
-				model.Enabled = true;
 	}
 }
