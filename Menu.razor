@@ -30,18 +30,19 @@
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	[Property] public SceneFile GameScene { get; set; }
-	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[2];
+	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
 	public int CurrentLeaderboardIndex = 0;
 	protected override void OnUpdate()
 	{
 		CurrentLeaderboardIndex.Clamp(0, Leaderboards.Length - 1);
 		Leaderboards[0] = Manager.FastestLap;
 		Leaderboards[1] = Manager.MostLaps;
+		Leaderboards[2] = Manager.Deaths;
 		Log.Info(CurrentLeaderboardIndex);
 	}
 	protected override void OnStart()
 	{
-
+		
 	}
 	 string IsMe(Sandbox.Services.Leaderboards.Entry entry)
     {

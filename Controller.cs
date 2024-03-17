@@ -106,5 +106,6 @@ void UpdateCamPos()
 				}
 				Manager.Respawn(triggerController);
 				triggerController.AbleToMove = true;
+				Sandbox.Services.Stats.SetValue("deaths", 1);
 	}
 }

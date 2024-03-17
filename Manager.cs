@@ -8,14 +8,16 @@ public sealed class Manager : Component
 	[Property] public List<SpawnPoint> spawnPoints { get; set;} = new List<SpawnPoint>();
 	public Sandbox.Services.Leaderboards.Board FastestLap { get; set; }
 	public Sandbox.Services.Leaderboards.Board MostLaps { get; set; }
+	public Sandbox.Services.Leaderboards.Board Deaths { get; set; }
 	protected override void OnStart()
 	{
 		_ = FetchFastestLap();
 		_ = RefreshMostLaps();
+		_ = FetchDeathsLeaderboard();
 	}
 	protected override void OnUpdate()
 	{
-
+		
 	}
 	public void Respawn( Controller controller )
 	{
@@ -40,14 +42,20 @@ public sealed class Manager : Component
 	public async Task FetchFastestLap()
 	{
 		FastestLap = Sandbox.Services.Leaderboards.Get("fastestlap");
-		FastestLap.MaxEntries = 5;
+		FastestLap.MaxEntries = 7;
 		await FastestLap.Refresh();
 	}
 	public async Task RefreshMostLaps()
 	{
 		MostLaps = Sandbox.Services.Leaderboards.Get("mostlaps");
-		MostLaps.MaxEntries = 5;
+		MostLaps.MaxEntries = 7;
 		await MostLaps.Refresh();
+	}
+	public async Task FetchDeathsLeaderboard()
+	{
+		Deaths = Sandbox.Services.Leaderboards.Get("mostdeaths");
+		Deaths.MaxEntries = 7;
+		await Deaths.Refresh();
 	}
 
 
