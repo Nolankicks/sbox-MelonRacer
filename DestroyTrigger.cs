@@ -22,19 +22,6 @@ public sealed class DestroyTrigger : Component, Component.ITriggerListener
 	public async Task Respawn(Collider other)
 	{
 			var triggerController = other.Components?.Get<Controller>();
-				var gibs = melonGibs.Clone(other.GameObject.Transform.Position);
-				gibs.Components.TryGet<Prop>(out var prop);
-				prop.Enabled = false;
-				if (prop is not null)
-				{
-					prop.CreateGibs();
-				}
-				triggerController.AbleToMove = false;
-				triggerController.Components.TryGet<SkinnedModelRenderer>(out var model);
-				model.Enabled = false;
-				await Task.DelayRealtimeSeconds(2);
-				manager.Respawn(triggerController);
-				triggerController.AbleToMove = true;
-				model.Enabled = true;
+			_ = triggerController.Respawn(other.GameObject);
 	}
 }
