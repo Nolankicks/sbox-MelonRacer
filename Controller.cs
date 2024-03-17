@@ -1,6 +1,8 @@
 using System;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+using Microsoft.CSharp.RuntimeBinder;
 using Sandbox;
 using Sandbox.ModelEditor.Nodes;
 
@@ -8,12 +10,13 @@ public sealed class Controller : Component
 {
 	[Property] public Rigidbody Rigidbody { get; set; }
 	[Property] public Vector3 WishVelocity { get; set; }
-	[Property] public GameObject Body { get; set; }
+	[Property] public Manager Manager { get; set; }
 	public CameraComponent Camera;
 	public Angles EyeAngles { get; set; }
 	public TimeSince LapTime;
 	public int LapCount { get; set; }
 	public bool AbleToMove { get; set; } = true;
+	[Property] public GameObject gibs { get; set; }
 	protected override void OnFixedUpdate()
 	{
 		if (AbleToMove)
@@ -66,4 +69,28 @@ void UpdateCamPos()
         Camera.Transform.Position = targetpos;
         Camera.Transform.Rotation = lookDir;
     }
+	public void ExplosiveKill()
+	{
+		Rigidbody.ApplyImpulseAt(Rigidbody.Transform.Position * WishVelocity, Vector3.Up * 5000);
+		_ = Respawn(GameObject);
+	}
+	public async Task Respawn(GameObject other)
+	{
+				var triggerController = other.Components?.Get<Controller>();
+				var gibsref = gibs.Clone(other.Transform.Position);
+				gibsref.Components.TryGet<Prop>(out var prop);
+				prop.Enabled = false;
+				prop.Transform.Position = other.Transform.Position;
+				if (prop is not null)
+				{
+					prop.CreateGibs();
+				}
+				triggerController.AbleToMove = false;
+				triggerController.Components.TryGet<SkinnedModelRenderer>(out var model);
+				model.Enabled = false;
+				await Task.DelayRealtimeSeconds(2);
+				Manager.Respawn(triggerController);
+				triggerController.AbleToMove = true;
+				model.Enabled = true;
+	}
 }
