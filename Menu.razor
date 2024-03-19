@@ -1,5 +1,8 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using System.Threading.Tasks;
+@using Sandbox.Network;
+@using Sandbox.Network;
 @inherits PanelComponent
 
 <root>
@@ -25,11 +28,25 @@
 	<div class="playbutton" onclick=@PlayGame>Start</div>
 	<div class="lobbylist">
 	<div class="title">Lobbies</div>
-	<div class="lobby">
-			<div class="name">name</div>
-			<div class="players">test</div>
+	@if (IsRefreshing)
+	{
+		<div class="updatetext">Refreshing...</div>
+	}
+	else if (List.Count == 0)
+	{
+		<div class="updatetext">No lobbies found... Create One!</div>
+	}
+	else
+	{
+		@foreach(var lobby in List)
+		{
+			<div class="lobby">
+			<div class="name">@lobby.Members / @lobby.MaxMembers</div>
+			<div class="players">@lobby.Name</div>
 			</div>
-			</div>
+		}
+	}
+	</div>
 </root>
 
 @code
@@ -38,6 +55,8 @@
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	[Property] public SceneFile GameScene { get; set; }
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
+	private bool IsRefreshing { get; set; }
+	private List<LobbyInformation> List {get; set;} = new();
 	public int CurrentLeaderboardIndex = 0;
 	protected override void OnUpdate()
 	{
@@ -61,7 +80,21 @@
     {
         return $"avatar:{entry.SteamId}";
     }
+	private async Task RefreshLobbyList()
+	{
+		while ( true )
+		{
+			IsRefreshing = true;
+			StateHasChanged();
 
+			List = await Networking.QueryLobbies();
+
+			IsRefreshing = false;
+			StateHasChanged();
+
+			await Task.DelayRealtimeSeconds( 5f );
+		}
+	}
 	void AddToLeaderboard()
 	{
 		if (CurrentLeaderboardIndex != Leaderboards.Length - 1)
