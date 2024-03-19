@@ -11,6 +11,7 @@ public sealed class Controller : Component
 	[Property] public Rigidbody Rigidbody { get; set; }
 	[Property] public Vector3 WishVelocity { get; set; }
 	[Property] public Manager Manager { get; set; }
+		[Property] public List<SpawnPoint> spawnPoints { get; set;} = new List<SpawnPoint>();
 	public CameraComponent Camera;
 	public Angles EyeAngles { get; set; }
 	public TimeSince LapTime;
@@ -35,6 +36,7 @@ public sealed class Controller : Component
 	protected override void OnStart()
 	{
 		EyeAngles = new Angles(0, 180, 0);
+		spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToList();
 	}
 	protected override void OnUpdate()
 	{
@@ -109,12 +111,26 @@ void UpdateCamPos()
 				{
 					model.Enabled = true;
 				}
-				Manager.Respawn(triggerController);
+				EyeAngles = new Angles(0, 180, 0);
+				Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position + Vector3.Up * 50.0f;
+				Log.Info("respawn");
 				LapTime = 0;
 				WishVelocity = Vector3.Zero;
 				Rigidbody.Velocity = Vector3.Zero;
 				triggerController.AbleToMove = true;
 				Log.Info(LapTime);
 				Sandbox.Services.Stats.SetValue("deaths", 1);
+	}
+	public void Lap()
+	{
+		if (IsProxy) return;
+		EyeAngles = new Angles(0, 180, 0);
+		Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position + Vector3.Up * 50.0f;
+		LapCount++;
+		Log.Info($"Laps:{LapCount} Laptime:{LapTime}");
+		Sandbox.Services.Stats.SetValue("laptime", LapTime);
+		Sandbox.Services.Stats.SetValue("laps", LapCount);
+		WishVelocity = Vector3.Zero;
+		Rigidbody.Velocity = Vector3.Zero;
 	}
 }

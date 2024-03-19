@@ -19,27 +19,6 @@ public sealed class Manager : Component
 	{
 		
 	}
-	public void Respawn( Controller controller )
-	{
-		if (IsProxy) return;
-		controller.EyeAngles = new Angles(0, 180, 0);
-		controller.Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position;
-		Log.Info("respawn");
-		controller.GameObject.Components.TryGet<SkinnedModelRenderer>(out var model);
-	}
-	public void Lap(Controller controller)
-	{
-		if (IsProxy) return;
-		controller.EyeAngles = new Angles(0, 180, 0);
-		controller.Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position;
-		controller.LapCount++;
-		Log.Info($"Laps:{controller.LapCount} Laptime:{controller.LapTime}");
-		Sandbox.Services.Stats.SetValue("laptime", controller.LapTime);
-		Sandbox.Services.Stats.SetValue("laps", controller.LapCount);
-		controller.WishVelocity = Vector3.Zero;
-		controller.Rigidbody.Velocity = Vector3.Zero;
-	}
-
 	public async Task FetchFastestLap()
 	{
 		if (IsProxy) return;

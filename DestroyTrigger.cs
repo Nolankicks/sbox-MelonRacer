@@ -4,7 +4,6 @@ using Sandbox;
 public sealed class DestroyTrigger : Component, Component.ITriggerListener
 {
 	[Property] public GameObject melonGibs { get; set; }
-	[Property] public Manager manager { get; set; }	
 	protected override void OnUpdate()
 	{
 

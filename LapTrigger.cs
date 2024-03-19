@@ -14,8 +14,8 @@ public sealed class LapTrigger : Component, Component.ITriggerListener
 		{
 			Log.Info("Lap Triggered");
 			controller.LapCount++;
-			manager.Lap(controller);
-			Sandbox.Services.Stats.SetValue("laps", controller.LapCount);
+			controller.Lap();
+			Sandbox.Services.Stats.Increment("laps", 1);
 			Sandbox.Services.Stats.SetValue("laptime", controller.LapTime);
 		}
 	}
