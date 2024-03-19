@@ -1,7 +1,8 @@
 @using Sandbox;
 @using Sandbox.UI;
 @inherits PanelComponent
-
+@using Sandbox.Network;
+@using System.Threading.Tasks;
 <root>
 	<img class="background" src="assets/background.vtex">
 	<div class="leaderboard">
@@ -21,8 +22,28 @@
 		
 	}
 	</div>
-
-	<div class="playbutton" onclick=@PlayGame>Start</div>
+	<div class="lobbylist">
+	<div class="title">Lobbies</div>
+	@if (IsRefreshing)
+	{
+		<div class="updatetext">Refreshing...</div>
+	}
+	else if (List.Count == 0)
+	{
+		<div class="updatetext">No lobbies found... Create One!</div>
+	}
+	else
+	{
+		@foreach(var lobby in List)
+		{
+			<div class="lobby" onclick=@( () => OpenLobby( lobby ) )>
+			<div class="name">@lobby.Members / @lobby.MaxMembers</div>
+			<div class="players">@lobby.Name</div>
+			</div>
+		}
+	}
+	</div>
+	<div class="playbutton" onclick=@PlayGame>Create Lobby</div>
 </root>
 
 @code
@@ -30,7 +51,9 @@
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	[Property] public SceneFile GameScene { get; set; }
+	private bool IsRefreshing { get; set; }
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
+	private List<LobbyInformation> List {get; set;} = new();
 	public int CurrentLeaderboardIndex = 0;
 	protected override void OnUpdate()
 	{
@@ -40,16 +63,34 @@
 		Leaderboards[2] = Manager.Deaths;
 		Log.Info(CurrentLeaderboardIndex);
 	}
-	protected override void OnStart()
+	protected override void OnEnabled()
 	{
 		
+	
 	}
 	 string IsMe(Sandbox.Services.Leaderboards.Entry entry)
     {
         return entry.Me ? "me" : "";
     }
+	private async Task RefreshLobbyList()
+	{
+		while ( true )
+		{
+			IsRefreshing = true;
+			StateHasChanged();
 
+			List = await Networking.QueryLobbies();
 
+			IsRefreshing = false;
+			StateHasChanged();
+
+			await Task.DelayRealtimeSeconds( 5f );
+		}
+	}
+	 void OpenLobby( LobbyInformation lobby )
+    {
+        GameNetworkSystem.Connect( lobby.LobbyId );
+    }
 	string AvatarTexture(Sandbox.Services.Leaderboards.Entry entry)
     {
         return $"avatar:{entry.SteamId}";

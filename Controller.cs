@@ -42,6 +42,7 @@ public sealed class Controller : Component
 	}
 	void BuildMoveAngles()
 	{
+		if (IsProxy) return;
 		WishVelocity = Input.AnalogMove;
 		if (!WishVelocity.IsNearlyZero())
 		{
@@ -53,6 +54,7 @@ public sealed class Controller : Component
 	}
 	void CamRot()
 	{
+		if (IsProxy) return;
 		var e = EyeAngles;
 		e += Input.AnalogLook;
 		e.pitch = e.pitch.Clamp(-89, 89);
@@ -61,6 +63,7 @@ public sealed class Controller : Component
 
 void UpdateCamPos()
     {	
+		if (IsProxy) return;
 		Camera = Scene.GetAllComponents<CameraComponent>().Where(x => x.IsMainCamera).FirstOrDefault();
 		var center = Rigidbody.PhysicsBody.GetBounds().Center;
         var lookDir = EyeAngles.ToRotation();
@@ -79,11 +82,13 @@ void UpdateCamPos()
     }
 	public void ExplosiveKill()
 	{
+		if (IsProxy) return;
 		Rigidbody.ApplyImpulseAt(Rigidbody.Transform.Position * WishVelocity, Vector3.Up * 5000);
 		_ = Respawn(GameObject);
 	}
 	public async Task Respawn(GameObject other)
 	{
+				if (IsProxy) return;
 				var triggerController = other.Components?.Get<Controller>();
 				var gibsref = gibs.Clone(other.Transform.Position);
 				gibsref.Components.TryGet<Prop>(out var prop);
@@ -105,7 +110,11 @@ void UpdateCamPos()
 					model.Enabled = true;
 				}
 				Manager.Respawn(triggerController);
+				LapTime = 0;
+				WishVelocity = Vector3.Zero;
+				Rigidbody.Velocity = Vector3.Zero;
 				triggerController.AbleToMove = true;
+				Log.Info(LapTime);
 				Sandbox.Services.Stats.SetValue("deaths", 1);
 	}
 }

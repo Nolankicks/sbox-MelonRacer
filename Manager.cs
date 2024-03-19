@@ -21,14 +21,15 @@ public sealed class Manager : Component
 	}
 	public void Respawn( Controller controller )
 	{
+		if (IsProxy) return;
 		controller.EyeAngles = new Angles(0, 180, 0);
 		controller.Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position;
+		Log.Info("respawn");
 		controller.GameObject.Components.TryGet<SkinnedModelRenderer>(out var model);
-		controller.LapTime = 0;
-		controller.WishVelocity = Vector3.Zero;
 	}
 	public void Lap(Controller controller)
 	{
+		if (IsProxy) return;
 		controller.EyeAngles = new Angles(0, 180, 0);
 		controller.Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position;
 		controller.LapCount++;
@@ -41,18 +42,21 @@ public sealed class Manager : Component
 
 	public async Task FetchFastestLap()
 	{
+		if (IsProxy) return;
 		FastestLap = Sandbox.Services.Leaderboards.Get("fastestlap");
 		FastestLap.MaxEntries = 7;
 		await FastestLap.Refresh();
 	}
 	public async Task RefreshMostLaps()
 	{
+		if (IsProxy) return;
 		MostLaps = Sandbox.Services.Leaderboards.Get("mostlaps");
 		MostLaps.MaxEntries = 7;
 		await MostLaps.Refresh();
 	}
 	public async Task FetchDeathsLeaderboard()
 	{
+		if (IsProxy) return;
 		Deaths = Sandbox.Services.Leaderboards.Get("mostdeaths");
 		Deaths.MaxEntries = 7;
 		await Deaths.Refresh();

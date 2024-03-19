@@ -2,10 +2,10 @@ using Sandbox;
 
 public sealed class LapTrigger : Component, Component.ITriggerListener
 {
-	[Property] public Manager manager { get; set; }
+	public Manager manager { get; set; }
 	protected override void OnUpdate()
 	{
-
+		manager = Scene.GetAllComponents<Manager>().FirstOrDefault( x => !x.IsProxy);
 	}
 	void ITriggerListener.OnTriggerEnter(Sandbox.Collider other)
 	{

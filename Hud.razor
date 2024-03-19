@@ -3,17 +3,24 @@
 @inherits PanelComponent
 @using System;
 <root>
+	@if (Controller is not null)
+	{
 	<div class="stats">
 	<div class="entry">Laps: @Controller.LapCount</div>
 	<div class="entry">Time: @Math.Round(Controller.LapTime, 2)</div>
 	</div>
+	}
 </root>
 
 @code
 {
 
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
-	[Property] public Controller Controller { get; set; }
+	public Controller Controller { get; set; }
+	protected override void OnUpdate()
+	{
+		Controller = Game.ActiveScene.GetAllComponents<Controller>().FirstOrDefault(x => !x.IsProxy);
+	}
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
