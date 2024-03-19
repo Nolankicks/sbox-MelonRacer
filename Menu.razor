@@ -64,11 +64,10 @@
 		Leaderboards[0] = Manager.FastestLap;
 		Leaderboards[1] = Manager.MostLaps;
 		Leaderboards[2] = Manager.Deaths;
-		Log.Info(CurrentLeaderboardIndex);
 	}
 	protected override void OnStart()
 	{
-		
+		_ = RefreshLobbyList();
 	}
 	 string IsMe(Sandbox.Services.Leaderboards.Entry entry)
     {
