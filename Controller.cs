@@ -119,7 +119,7 @@ void UpdateCamPos()
 				Rigidbody.Velocity = Vector3.Zero;
 				triggerController.AbleToMove = true;
 				Log.Info(LapTime);
-				Sandbox.Services.Stats.SetValue("deaths", 1);
+				Sandbox.Services.Stats.Increment("deaths", 1);
 	}
 	public void Lap()
 	{
@@ -129,7 +129,7 @@ void UpdateCamPos()
 		LapCount++;
 		Log.Info($"Laps:{LapCount} Laptime:{LapTime}");
 		Sandbox.Services.Stats.SetValue("laptime", LapTime);
-		Sandbox.Services.Stats.SetValue("laps", LapCount);
+		Sandbox.Services.Stats.Increment("laps", 1);
 		WishVelocity = Vector3.Zero;
 		Rigidbody.Velocity = Vector3.Zero;
 	}
