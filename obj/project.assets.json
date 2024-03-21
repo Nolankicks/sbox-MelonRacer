@@ -33,9 +33,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\users\\talle\\documents\\s&box projects\\mellonracer\\code\\melonracer.csproj",
-      "projectName": "melonracer",
-      "projectPath": "C:\\users\\talle\\documents\\s&box projects\\mellonracer\\code\\melonracer.csproj",
+      "projectUniqueName": "C:\\users\\talle\\documents\\s&box projects\\mellonracer\\code\\mellonracer.csproj",
+      "projectName": "mellonracer",
+      "projectPath": "C:\\users\\talle\\documents\\s&box projects\\mellonracer\\code\\mellonracer.csproj",
       "packagesPath": "C:\\Users\\talle\\.nuget\\packages\\",
       "outputPath": "C:\\users\\talle\\documents\\s&box projects\\mellonracer\\code\\obj\\",
       "projectStyle": "PackageReference",
