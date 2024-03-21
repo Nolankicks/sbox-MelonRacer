@@ -24,11 +24,17 @@
 
 		</div>
 	</div>
+	<div class="scenechanges">
+		<div class="button" onclick=@(x => ChangeScene(MenuScene))>Back To Menu</div>
+		<div class="button" onclick=@(x => ChangeScene(GameScene))>Play!</div>
+	</div>
 </root>
 
 @code
 {
 	[Property] public List<Texture> textures { get; set; } = new();
+	[Property] public SceneFile GameScene { get; set; }
+	[Property] public SceneFile MenuScene { get; set; }
 	[Property] ModelRenderer melon { get; set; }
 	[Property] ModelCollider collider { get; set; }
 	[Property] public List<Model> models { get; set; } = new();
@@ -38,11 +44,20 @@
 		//Log.Info(ActiveModel);
 		melon.Model = models[ActiveModel];
 		collider.Model = models[ActiveModel];
+		var model = FileSystem.Data.ReadAllText("activeModel.txt").ToString();
+		Log.Info(model);
 	}
 	void ChangeModel(int i)
 	{
 		Log.Info(i);
 		ActiveModel = i;
+		FileSystem.Data.WriteAllText("activeModel.txt", models[ActiveModel].ResourcePath);
+		Log.Info(models[ActiveModel].ResourcePath);
+	}
+
+	void ChangeScene(SceneFile sceneFile)
+	{
+		Game.ActiveScene.Load(sceneFile);
 	}
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt

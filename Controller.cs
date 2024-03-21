@@ -10,6 +10,8 @@ public sealed class Controller : Component
 {
 	[Property] public Rigidbody Rigidbody { get; set; }
 	[Property] public Vector3 WishVelocity { get; set; }
+	[Property] public SkinnedModelRenderer body { get; set; }
+	[Property] public ModelCollider bodyCollider { get; set; }
 	[Property] public Manager Manager { get; set; }
 	[Property] public List<SpawnPoint> spawnPoints { get; set;} = new List<SpawnPoint>();
 	public CameraComponent Camera;
@@ -18,6 +20,7 @@ public sealed class Controller : Component
 	public int LapCount { get; set; }
 	public bool AbleToMove { get; set; } = true;
 	[Property] public GameObject gibs { get; set; }
+	public Model BodyModel;
 	protected override void OnFixedUpdate()
 	{
 		if (AbleToMove)
@@ -31,11 +34,20 @@ public sealed class Controller : Component
 		{
 		Rigidbody.ApplyForce(WishVelocity * 500);
 		}
+		Log.Info(Rigidbody.PhysicsBody.Mass);
 	}
 	protected override void OnStart()
 	{
+		if (IsProxy) return;
 		EyeAngles = new Angles(0, 180, 0);
 		spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToList();
+		var selectedmodel = FileSystem.Data.ReadAllText("activeModel.txt");
+		if (selectedmodel is not null)
+		{
+			BodyModel = Model.Load(selectedmodel);
+			body.Model = BodyModel;
+			bodyCollider.Model = BodyModel;
+		}
 	}
 	void BuildMoveAngles()
 	{
@@ -112,6 +124,7 @@ void UpdateCamPos()
 				var gibsref = gibs.Clone(other.Transform.Position);
 				//Gets prop component
 				gibsref.Components.TryGet<Prop>(out var prop);
+				prop.Model = BodyModel;
 				//Disables prop and sets position
 				prop.Enabled = false;
 				prop.Transform.Position = other.Transform.Position;
