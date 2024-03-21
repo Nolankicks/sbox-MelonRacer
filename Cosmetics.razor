@@ -19,6 +19,10 @@
 					{
 						<img onclick=@(x => ChangeModel(1)) src="@textures[i].ResourcePath">
 					}
+					@if (i == 2)
+					{
+						<img onclick=@(x => ChangeModel(2)) src="@textures[i].ResourcePath">
+					}
 				</div>
 			}
 
@@ -38,6 +42,7 @@
 	[Property] ModelRenderer melon { get; set; }
 	[Property] ModelCollider collider { get; set; }
 	[Property] public List<Model> models { get; set; } = new();
+	[Property] public Rigidbody rb { get; set; }
 	public int ActiveModel { get; set; } = 0;
 	protected override void OnUpdate()
 	{
@@ -53,6 +58,7 @@
 		ActiveModel = i;
 		FileSystem.Data.WriteAllText("activeModel.txt", models[ActiveModel].ResourcePath);
 		Log.Info(models[ActiveModel].ResourcePath);
+		rb.PhysicsBody.SmoothMove(Vector3.Up * 32, 0.5f, Time.Delta);
 	}
 
 	void ChangeScene(SceneFile sceneFile)
