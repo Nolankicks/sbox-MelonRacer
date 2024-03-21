@@ -99,13 +99,14 @@ void UpdateCamPos()
 		if (IsProxy) return;
 		//Impulse rigidbody so it looks like an explosion
 		Rigidbody.ApplyImpulseAt(Rigidbody.Transform.Position * WishVelocity, Vector3.Up * 5000);
+		//Respawn the player
 		_ = Respawn(GameObject);
 	}
 	public async Task Respawn(GameObject other)
 	{
 				//Proxy Check
 				if (IsProxy) return;
-				//Getters
+				//Get the controller from the trigger
 				var triggerController = other.Components?.Get<Controller>();
 				//Clones gibs
 				var gibsref = gibs.Clone(other.Transform.Position);

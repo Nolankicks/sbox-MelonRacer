@@ -12,8 +12,7 @@ public sealed class ExplosiveTrigger : Component, Component.ITriggerListener
 	void ITriggerListener.OnTriggerEnter(Sandbox.Collider other)
 	{
 		other.Components.TryGet<Controller>(out var controller);
-		other.Components.TryGet<Rigidbody>(out var rb);
-		if (other.Tags.Has("player") && controller is not null && rb is not null)
+		if (other.Tags.Has("player") && controller is not null)
 		{
 			controller.ExplosiveKill();
 			Explosion.Clone(GameObject.Transform.Position);
