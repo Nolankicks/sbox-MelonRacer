@@ -105,6 +105,7 @@ void UpdateCamPos()
 				{
 					prop.CreateGibs();
 				}
+				prop.GameObject.Destroy();
 				triggerController.AbleToMove = false;
 				await Task.DelayRealtimeSeconds(2);
 				if (model is not null)
