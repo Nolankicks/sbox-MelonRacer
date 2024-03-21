@@ -37,10 +37,6 @@ public sealed class Controller : Component
 		EyeAngles = new Angles(0, 180, 0);
 		spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToList();
 	}
-	protected override void OnUpdate()
-	{
-		
-	}
 	void BuildMoveAngles()
 	{
 		//Proxy Check
