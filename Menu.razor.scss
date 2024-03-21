@@ -215,4 +215,30 @@ Menu
 			}
 		}
 	}
+	.button
+	{
+		width: 300px;
+		height: 100px;
+		align-items: center;
+		justify-content: center;
+		background-color: #fff;
+		border-radius: 16px;
+		font-size: 32px;
+		font-weight: bold;
+		color: #000;
+		transition: all 0.1s ease;
+		&:hover
+		{
+			transform: scale(1.1);
+		}
+	}
+	.options
+	{
+		position: absolute;
+		bottom: 0;
+		width: 500px;
+		height: 300px;
+		align-items: center;
+		justify-content: center;
+	}
 }

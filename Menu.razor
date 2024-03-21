@@ -47,13 +47,17 @@
 		}
 	}
 	</div>
+	<div class="options">
+		<div class="button">Skins</div>
+	</div>
 </root>
 
 @code
 {
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
-	[Property] public SceneFile GameScene { get; set; }
+	[Property, Category("Scenes")] public SceneFile GameScene { get; set; }
+	[Property, Category("Scenes")] public SceneFile LockerScene { get; set; }
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
 	private bool IsRefreshing { get; set; }
 	private List<LobbyInformation> List {get; set;} = new();
@@ -115,6 +119,11 @@
 		{
 			CurrentLeaderboardIndex = Leaderboards.Length - 1;
 		}
+	}
+
+	void ChangeSkins()
+	{
+		Game.ActiveScene.Load(LockerScene);
 	}
 
 	void PlayGame()

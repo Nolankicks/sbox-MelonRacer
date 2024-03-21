@@ -1,0 +1,51 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PanelComponent
+
+<root>
+	<div class="cosmetics">
+		<div class="header">
+			Character Customization
+		</div>
+		<div class="options">
+			@for (int i = 0; i < 28; i++)
+			{
+				<div class="icon">
+					@if (i == 0)
+					{
+						<img onclick=@(x => ChangeModel(0)) src="@textures[i].ResourcePath">
+					}
+					@if (i == 1)
+					{
+						<img onclick=@(x => ChangeModel(1)) src="@textures[i].ResourcePath">
+					}
+				</div>
+			}
+
+		</div>
+	</div>
+</root>
+
+@code
+{
+	[Property] public List<Texture> textures { get; set; } = new();
+	[Property] ModelRenderer melon { get; set; }
+	[Property] ModelCollider collider { get; set; }
+	[Property] public List<Model> models { get; set; } = new();
+	public int ActiveModel { get; set; } = 0;
+	protected override void OnUpdate()
+	{
+		//Log.Info(ActiveModel);
+		melon.Model = models[ActiveModel];
+		collider.Model = models[ActiveModel];
+	}
+	void ChangeModel(int i)
+	{
+		Log.Info(i);
+		ActiveModel = i;
+	}
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( Time.Now );
+}
