@@ -48,6 +48,7 @@ public sealed class Controller : Component
 			body.Model = BodyModel;
 			bodyCollider.Model = BodyModel;
 		}
+		Log.Info(Rigidbody.PhysicsBody.Mass);
 	}
 	void BuildMoveAngles()
 	{

@@ -49,8 +49,6 @@
 		//Log.Info(ActiveModel);
 		melon.Model = models[ActiveModel];
 		collider.Model = models[ActiveModel];
-		var model = FileSystem.Data.ReadAllText("activeModel.txt").ToString();
-		Log.Info(model);
 	}
 	void ChangeModel(int i)
 	{
@@ -58,7 +56,7 @@
 		ActiveModel = i;
 		FileSystem.Data.WriteAllText("activeModel.txt", models[ActiveModel].ResourcePath);
 		Log.Info(models[ActiveModel].ResourcePath);
-		rb.PhysicsBody.SmoothMove(Vector3.Up * 32, 0.5f, Time.Delta);
+		rb.PhysicsBody.SmoothMove(Vector3.Up * 64, 0.5f, Time.Delta);
 	}
 
 	void ChangeScene(SceneFile sceneFile)
