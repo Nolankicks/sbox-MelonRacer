@@ -192,5 +192,6 @@ void UpdateCamPos()
 		//Reset wishvelo and velo
 		WishVelocity = Vector3.Zero;
 		Rigidbody.Velocity = Vector3.Zero;
+		Log.Info(LapCount);
 	}
 }
