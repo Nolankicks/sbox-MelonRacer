@@ -13,7 +13,6 @@ public sealed class LapTrigger : Component, Component.ITriggerListener
 		if (other.GameObject.Tags.Has("player") && controller != null)
 		{
 			Log.Info("Lap Triggered");
-			controller.LapCount++;
 			controller.Lap();
 		}
 	}

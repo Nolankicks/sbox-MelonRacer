@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.CSharp.RuntimeBinder;
 using Sandbox;
 using Sandbox.ModelEditor.Nodes;
+using Sandbox.Utility;
 
 public sealed class Controller : Component
 {
@@ -21,6 +22,7 @@ public sealed class Controller : Component
 	public bool AbleToMove { get; set; } = true;
 	[Property] public GameObject gibs { get; set; }
 	public Model BodyModel;
+	public string SteamId { get; set; }
 	protected override void OnFixedUpdate()
 	{
 		if (AbleToMove)
@@ -39,6 +41,7 @@ public sealed class Controller : Component
 	protected override void OnStart()
 	{
 		if (IsProxy) return;
+		SteamId = Steam.SteamId.ToString();
 		EyeAngles = new Angles(0, 180, 0);
 		spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToList();
 		var selectedmodel = FileSystem.Data.ReadAllText("activeModel.txt");

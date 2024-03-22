@@ -2,6 +2,7 @@
 @using Sandbox.UI;
 @inherits PanelComponent
 @using System;
+@using Sandbox.Network;
 <root>
 	@if (Controller is not null)
 	{
@@ -10,6 +11,14 @@
 	<div class="entry">Time: @Math.Round(Controller.LapTime, 2)</div>
 	</div>
 	}
+	<div class="pausemenu @(IsPaused ? "" : "hidden")">
+		<div class="header">PAUSED</div>
+		<div class="background"></div>
+		<div class="buttons">
+			<div class="button" onclick=@(x => IsPaused = !IsPaused)>Resume</div>
+			<div class="button" onclick=@(x => ChangeScene(MenuScene))>Back to Menu</div>
+		</div>
+	</div>
 </root>
 
 @code
@@ -17,9 +26,33 @@
 
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	public Controller Controller { get; set; }
+	[Property] public bool IsPaused { get; set; } = false;
+	[Property] public SceneFile MenuScene { get; set; }
 	protected override void OnUpdate()
 	{
+		if (IsProxy) return;
 		Controller = Game.ActiveScene.GetAllComponents<Controller>().FirstOrDefault(x => !x.IsProxy);
+		if (Input.EscapePressed)
+		{
+			IsPaused = !IsPaused;
+		}
+	}
+	void ChangeScene(SceneFile scene)
+	{
+		var player = Scene.GetAllComponents<Controller>().FirstOrDefault(x => !x.IsProxy);
+		if (player is not null)
+		{
+			DeletePlayer(player.GameObject);
+		}
+		Game.ActiveScene.Load(scene);
+	}
+	[Broadcast]
+	public void DeletePlayer(GameObject player)
+	{
+		if (player is not null)
+		{
+		player.Destroy();
+		}
 	}
 
 	/// <summary>

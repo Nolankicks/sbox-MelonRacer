@@ -9,7 +9,7 @@ Hud
 	align-items: center;
 	font-weight: bold;
 	border-radius: 20px;
-
+	transition: ease 0.1s all;
 	.stats
 	{
 		font-family: poppins;
@@ -20,10 +20,9 @@ Hud
 		width: 500px;
 		height: 500px;
 		flex-direction: column;
-		
+		transition: all 0.1s ease;
 		.entry
 		{
-			
 			border-radius: 16px;
 			align-items: center;
 			justify-content: center;
@@ -31,6 +30,66 @@ Hud
 			background-color: gray;
 			width: 100%;
 			height: 100px;
+			transition: all 0.1s ease;
+		}
+	}
+	.pausemenu
+	{
+		transition: ease 0.1s all;
+		position: absolute;
+		pointer-events: all;
+		width: 100%;
+		height: 100%;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 0.1s ease;
+		font-family: poppins;
+		.header
+		{
+			position: absolute;
+			top: 64px;
+			z-index: 1000;
+			font-size: 120px;
+			font-size: 120px;
+		}
+		.background
+		{
+			position: absolute;
+			background-color: gray;
+			opacity: 0.7;
+			width: 100%;
+			height: 100%;
+			transition: ease 0.1s all;
+		}
+		.buttons
+		{
+			flex-direction: column;
+			gap: 16px;
+			opacity: 1;
+			transition: all 0.1s ease;
+			.button
+			{
+				opacity: 1;
+				font-size: 32px;
+				background-color: white;
+				border-radius: 16px;
+				width: 350px;
+				height: 100px;
+				align-items: center;
+				justify-content: center;
+				transition: ease 0.1s all;
+				&:hover
+				{
+					transform: scale(1.1);
+					sound-in: ui.button.over;
+					transition: all 0.1s ease;
+				}
+			}
+		}
+		&.hidden
+		{
+			opacity: 0;
+			transition: ease 0.1s all;
 		}
 	}
 }
