@@ -99,7 +99,7 @@ void UpdateCamPos()
 		//Set the camera rotation
         Camera.Transform.Rotation = lookDir;
 		//Trace to see if the camera is inside a wall
-		var tr = Scene.Trace.Ray(center, center - (EyeAngles.Forward * 300)).WithoutTags("player").Run();
+		var tr = Scene.Trace.Ray(center, center - (EyeAngles.Forward * 300)).WithoutTags("player", "barrier").Run();
 		if (tr.Hit)
 		{
 			Camera.Transform.Position = tr.EndPosition + tr.Normal * 2 + Vector3.Up * 50;

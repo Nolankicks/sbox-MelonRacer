@@ -25,7 +25,7 @@
 	}
 	</div>
 
-	<div class="playbutton" onclick=@PlayGame>Create a lobby</div>
+	<div class="playbutton" onclick=@( () => ShowMapSelect = true )>Create a lobby</div>
 	<div class="lobbylist">
 	<div class="title">Lobbies</div>
 	@if (IsRefreshing)
@@ -40,7 +40,7 @@
 	{
 		@foreach(var lobby in List)
 		{
-			<div class="lobby">
+			<div class="lobby" onclick=@( () => OpenLobby(lobby))>
 			<div class="name">@lobby.Members / @lobby.MaxMembers</div>
 			<div class="players">@lobby.Name</div>
 			</div>
@@ -50,12 +50,17 @@
 	<div class="options">
 		<div class="button" onclick=@ChangeSkins>Change Playermodel</div>
 	</div>
+		<div class="mapselect @(ShowMapSelect ? "" : "hidden")">
+		<div class="mapbutton"></div>
+		<div class="mapbutton"></div>
+	</div>
 </root>
 
 @code
 {
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
+	[Property] public bool ShowMapSelect { get; set; } = false;
 	[Property, Category("Scenes")] public SceneFile GameScene { get; set; }
 	[Property, Category("Scenes")] public SceneFile LockerScene { get; set; }
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
@@ -109,6 +114,10 @@
 			CurrentLeaderboardIndex = 0;
 		}
 	}
+	 void OpenLobby( LobbyInformation lobby )
+    {
+        GameNetworkSystem.Connect( lobby.LobbyId );
+    }
 	void SubtractFromLeaderboard()
 	{
 		if (CurrentLeaderboardIndex != 0)
@@ -126,9 +135,9 @@
 		Game.ActiveScene.Load(LockerScene);
 	}
 
-	void PlayGame()
+	void PlayGame(SceneFile scene)
 	{
-		Game.ActiveScene.Load(GameScene);
+		Game.ActiveScene.Load(scene);
 	}
 	
 	/// <summary>
