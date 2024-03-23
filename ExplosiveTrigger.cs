@@ -4,9 +4,19 @@ public sealed class ExplosiveTrigger : Component, Component.ITriggerListener
 {
 	[Property] public GameObject Explosion { get; set; }
 	[Property] public SoundEvent ExplosionSound { get; set; }
-	protected override void OnUpdate()
+	[Property] public ModelRenderer ModelRender { get; set; }
+	[Property] public List<Model> models { get; set; } = new();
+	[Property] public ModelCollider modelCollider { get; set; }
+	[Property] public ModelCollider triggerCollider { get; set; }
+	protected override void OnStart()
 	{
-
+		if (ModelRender is not null && models is not null && modelCollider is not null)
+		{
+			var selectedModel = Game.Random.FromList(models);
+			ModelRender.Model = selectedModel;
+			modelCollider.Model = selectedModel;
+			triggerCollider.Model = selectedModel;
+		}
 	}
 
 	void ITriggerListener.OnTriggerEnter(Sandbox.Collider other)

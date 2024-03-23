@@ -25,7 +25,7 @@
 	}
 	</div>
 
-	<div class="playbutton" onclick=@( () => ShowMapSelect = true )>Create a lobby</div>
+	<div class="playbutton" onclick=@( () =>  ShowMapSelect = true)>Create a lobby</div>
 	<div class="lobbylist">
 	<div class="title">Lobbies</div>
 	@if (IsRefreshing)
@@ -51,7 +51,10 @@
 		<div class="button" onclick=@ChangeSkins>Change Playermodel</div>
 	</div>
 		<div class="mapselect @(ShowMapSelect ? "" : "hidden")">
-		<div class="mapbutton"></div>
+		<div class="mapbutton" onclick=@( () => PlayGame(MelonRacerOgScene))>
+			<img src="assets/background.vtex" class="image">
+			<div class="text">gm_melonrace</div>
+		</div>
 		<div class="mapbutton"></div>
 	</div>
 </root>
@@ -61,7 +64,7 @@
 	[Property] public Manager Manager { get; set; }
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	[Property] public bool ShowMapSelect { get; set; } = false;
-	[Property, Category("Scenes")] public SceneFile GameScene { get; set; }
+	[Property, Category("Scenes")] public SceneFile MelonRacerOgScene { get; set; }
 	[Property, Category("Scenes")] public SceneFile LockerScene { get; set; }
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
 	private bool IsRefreshing { get; set; }

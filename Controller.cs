@@ -23,6 +23,7 @@ public sealed class Controller : Component
 	[Property] public GameObject gibs { get; set; }
 	public Model BodyModel;
 	public string SteamId { get; set; }
+	[Property] public Angles StartOffSetAngles { get; set; } = new Angles(0, 180, 0);
 	protected override void OnFixedUpdate()
 	{
 		if (AbleToMove)
@@ -42,14 +43,14 @@ public sealed class Controller : Component
 	{
 		if (IsProxy) return;
 		SteamId = Steam.SteamId.ToString();
-		EyeAngles = new Angles(0, 180, 0);
+		EyeAngles = StartOffSetAngles;
 		spawnPoints = Scene.GetAllComponents<SpawnPoint>().ToList();
 		var selectedmodel = FileSystem.Data.ReadAllText("activeModel.txt");
 		if (selectedmodel is not null)
 		{
 			BodyModel = Model.Load(selectedmodel);
 			body.Model = BodyModel;
-			bodyCollider.Model = BodyModel;
+			//bodyCollider.Model = BodyModel;
 		}
 		Log.Info(Rigidbody.PhysicsBody.Mass);
 	}
@@ -174,7 +175,7 @@ void UpdateCamPos()
 				//Add to the total deaths stat
 				Sandbox.Services.Stats.Increment("deaths", 1);
 	}
-	public void Lap()
+	public async Task Lap()
 	{
 		//Proxy Check
 		if (IsProxy) return;
@@ -189,6 +190,9 @@ void UpdateCamPos()
 		//Set stats
 		Sandbox.Services.Stats.SetValue("laptime", LapTime);
 		Sandbox.Services.Stats.Increment("laps", 1);
+		await Task.DelayRealtimeSeconds(0.5f);
+		//Reset laptime
+		LapTime = 0;
 		//Reset wishvelo and velo
 		WishVelocity = Vector3.Zero;
 		Rigidbody.Velocity = Vector3.Zero;
