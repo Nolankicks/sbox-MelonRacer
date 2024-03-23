@@ -24,6 +24,8 @@ public sealed class Controller : Component
 	public Model BodyModel;
 	public string SteamId { get; set; }
 	[Property] public Angles StartOffSetAngles { get; set; } = new Angles(0, 180, 0);
+	[Property] public string MapName { get; set; }
+	
 	protected override void OnFixedUpdate()
 	{
 		if (AbleToMove)
@@ -37,7 +39,6 @@ public sealed class Controller : Component
 		{
 		Rigidbody.ApplyForce(WishVelocity * 500);
 		}
-		Log.Info(Rigidbody.PhysicsBody.Mass);
 	}
 	protected override void OnStart()
 	{
@@ -50,9 +51,16 @@ public sealed class Controller : Component
 		{
 			BodyModel = Model.Load(selectedmodel);
 			body.Model = BodyModel;
-			//bodyCollider.Model = BodyModel;
+			bodyCollider.Model = BodyModel;
 		}
-		Log.Info(Rigidbody.PhysicsBody.Mass);
+		if (MapName == "gm_melonrace")
+		{
+			Log.Info("Playing on gm_melonrace");
+		}
+		else if (MapName == "gm_melonracelockdown")
+		{
+			Log.Info("Playing on gm_melonracelockdown");
+		}
 	}
 	void BuildMoveAngles()
 	{
@@ -157,9 +165,9 @@ void UpdateCamPos()
 					model.Enabled = true;
 				}
 				//Reset eyeangles
-				EyeAngles = new Angles(0, 180, 0);
-				//Respawn the player
-				Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position + Vector3.Up * 50.0f;
+				var spawnpoint = Game.Random.FromList(spawnPoints);
+				Transform.Position = spawnpoint.Transform.Position + Vector3.Up * 50.0f;
+				EyeAngles = spawnpoint.Transform.Rotation;
 				//Log it
 				Log.Info("respawn");
 				//Reset laptime
@@ -180,15 +188,25 @@ void UpdateCamPos()
 		//Proxy Check
 		if (IsProxy) return;
 		//Reset eyeangles
-		EyeAngles = new Angles(0, 180, 0);
+		
 		//Get all spawnpoints
-		Transform.Position = Game.Random.FromList(spawnPoints).GameObject.Transform.Position + Vector3.Up * 50.0f;
+		var spawnpoint = Game.Random.FromList(spawnPoints);
+		Transform.Position = spawnpoint.Transform.Position + Vector3.Up * 50.0f;
+		EyeAngles = spawnpoint.Transform.Rotation;
 		//Increment lapcount
 		LapCount++;
 		//Log the laptime and lapcount
 		Log.Info($"Laps:{LapCount} Laptime:{LapTime}");
 		//Set stats
-		Sandbox.Services.Stats.SetValue("laptime", LapTime);
+		if (MapName == "gm_melonrace")
+		{
+			Sandbox.Services.Stats.SetValue("laptime", LapTime);
+		}
+		else if (MapName == "gm_melonracelockdown")
+		{
+			Sandbox.Services.Stats.SetValue("lockdownlaps", LapTime);
+		}
+		
 		Sandbox.Services.Stats.Increment("laps", 1);
 		await Task.DelayRealtimeSeconds(0.5f);
 		//Reset laptime

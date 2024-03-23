@@ -52,10 +52,13 @@
 	</div>
 		<div class="mapselect @(ShowMapSelect ? "" : "hidden")">
 		<div class="mapbutton" onclick=@( () => PlayGame(MelonRacerOgScene))>
-			<img src="assets/background.vtex" class="image">
+			<img src="@(MapTextures[0].ResourcePath)" class="image">
 			<div class="text">gm_melonrace</div>
 		</div>
-		<div class="mapbutton"></div>
+		<div class="mapbutton" onclick=@( () => PlayGame(MelonRacerLockdownScene))>
+				<img src="@(MapTextures[1].ResourcePath)" class="image">
+			<div class="text">gm_melonlockdown</div>
+		</div>
 	</div>
 </root>
 
@@ -65,8 +68,10 @@
 	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
 	[Property] public bool ShowMapSelect { get; set; } = false;
 	[Property, Category("Scenes")] public SceneFile MelonRacerOgScene { get; set; }
+	[Property, Category("Scenes")] public SceneFile MelonRacerLockdownScene { get; set; }
 	[Property, Category("Scenes")] public SceneFile LockerScene { get; set; }
-	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[3];
+	[Property] public List<Texture> MapTextures { get; set; } = new();
+	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[4];
 	private bool IsRefreshing { get; set; }
 	private List<LobbyInformation> List {get; set;} = new();
 	public int CurrentLeaderboardIndex = 0;
@@ -74,8 +79,9 @@
 	{
 		CurrentLeaderboardIndex.Clamp(0, Leaderboards.Length - 1);
 		Leaderboards[0] = Manager.FastestLap;
-		Leaderboards[1] = Manager.MostLaps;
-		Leaderboards[2] = Manager.Deaths;
+		Leaderboards[1] = Manager.MelonLockdown;
+		Leaderboards[2] = Manager.MostLaps;
+		Leaderboards[3] = Manager.Deaths;
 	}
 	protected override void OnStart()
 	{
