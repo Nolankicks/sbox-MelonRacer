@@ -25,28 +25,28 @@ public sealed class Manager : Component
 	{
 		if (IsProxy) return;
 		FastestLap = Sandbox.Services.Leaderboards.Get("fastestlap");
-		FastestLap.MaxEntries = 7;
+		FastestLap.MaxEntries = 10;
 		await FastestLap.Refresh();
 	}
 	public async Task RefreshMostLaps()
 	{
 		if (IsProxy) return;
 		MostLaps = Sandbox.Services.Leaderboards.Get("mostlaps");
-		MostLaps.MaxEntries = 7;
+		MostLaps.MaxEntries = 10;
 		await MostLaps.Refresh();
 	}
 	public async Task FetchDeathsLeaderboard()
 	{
 		if (IsProxy) return;
 		Deaths = Sandbox.Services.Leaderboards.Get("mostdeaths");
-		Deaths.MaxEntries = 7;
+		Deaths.MaxEntries = 10;
 		await Deaths.Refresh();
 	}
 	public async Task FetchMelonLockdownLeaderboard()
 	{
 		if (IsProxy) return;
 		MelonLockdown = Sandbox.Services.Leaderboards.Get("gm_lockdown");
-		MelonLockdown.MaxEntries = 7;
+		MelonLockdown.MaxEntries = 10;
 		await MelonLockdown.Refresh();
 	}
 

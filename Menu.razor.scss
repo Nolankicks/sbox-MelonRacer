@@ -94,7 +94,8 @@ Menu
 		{
 			background-color: gray;
 			width: 100%;
-			height: 100px;
+			height: 75px;
+			font-size: 24px;
 			align-items: center;
 			justify-content: center;
 			border-radius: 16px;
@@ -103,7 +104,7 @@ Menu
 				position: absolute;
 				left: 32px;
 				gap: 8px;
-				font-size: 52px;
+				font-size: 24px;
 				align-items: center;
 				image
 				{
@@ -127,7 +128,7 @@ Menu
 			}
 			.rank
 			{
-				font-size: 32px;
+				font-size: 24px;
 				color: #fff;
 				position: absolute;
 				left: 32px;
@@ -190,9 +191,10 @@ Menu
 			align-items: center;
 			justify-content: center;
 			width: 100%;
-			height: 100px;
+			height: 75px;
 			background-color: gray;
 			border-radius: 16px;
+			font-size: 24px;
 			transition: all 0.1s ease;
 			>.name
 			{
