@@ -255,6 +255,7 @@ Menu
 		align-items: center;
 		justify-content: center;
 		gap: 32px;
+		position: relative;
 		&.hidden
 		{
 			opacity: 0;

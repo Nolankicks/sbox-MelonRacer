@@ -6,7 +6,7 @@
 @inherits PanelComponent
 
 <root>
-	<img class="background" src="assets/background.vtex">
+	<img class="background" src="@BackgroundTexture.ResourcePath">
 	<div class="leaderboard">
 	<div class="title">Leaderboard</div>
 	<div class="changeleaderboard">
@@ -70,6 +70,7 @@
 	[Property, Category("Scenes")] public SceneFile MelonRacerOgScene { get; set; }
 	[Property, Category("Scenes")] public SceneFile MelonRacerLockdownScene { get; set; }
 	[Property, Category("Scenes")] public SceneFile LockerScene { get; set; }
+	[Property] public Texture BackgroundTexture { get; set; }
 	[Property] public List<Texture> MapTextures { get; set; } = new();
 	public Sandbox.Services.Leaderboards.Board[] Leaderboards = new Sandbox.Services.Leaderboards.Board[4];
 	private bool IsRefreshing { get; set; }
